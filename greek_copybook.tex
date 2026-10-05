@@ -1,0 +1,280 @@
+% !TEX program = xelatex
+% ================================================================
+%  希腊字母练字帖  Greek Alphabet Copybook
+%  2 x A4 | 24 letters | 3 col x 4 row per page
+%
+%  每格结构:
+%    [序号] English              /IPA/
+%           中文音译
+%    ---------------------------------
+%    +----------+----------+
+%    | 浅灰描红  |  临摹空格  |   大写区(四线三格)
+%    +----------+----------+
+%    | 浅灰描红  |  临摹空格  |   小写区(四线三格)
+%    +----------+----------+
+%
+%  编译: xelatex greek_copybook.tex
+% ================================================================
+\documentclass[a4paper]{article}
+\usepackage[paperwidth=210mm,paperheight=297mm,
+            left=6mm,right=6mm,top=6mm,bottom=6mm]{geometry}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+% ---------------- 字体 ----------------
+% Palatino 承载希腊字母与英文。实测字高比例:
+%   cap height = 0.6968 em    x-height  = 0.4683 em
+%   descender  = 0.1562 em    最宽大写 Μ = 0.9448 em
+% 四线三格的位置全部由这些实测值推算,保证范本比例真实。
+\setmainfont{Palatino}
+\setCJKmainfont{STHeiti}
+% Palatino 缺 IPA 修饰符,音标单独用 Times New Roman
+\newfontfamily\ipafont{Times New Roman}
+
+% ---------------- 颜色 ----------------
+\definecolor{guide}{gray}{0.55}       % cap/asc line 与 baseline(主基准)
+\definecolor{guideMid}{gray}{0.76}   % x-height / descender(次基准)
+\definecolor{guideAxis}{gray}{0.85}  % 中线
+\definecolor{trace}{gray}{0.62}       % 描红范本
+\definecolor{cellbd}{gray}{0.42}      % 格框
+\definecolor{labEn}{gray}{0.12}
+\definecolor{labZh}{gray}{0.33}
+\definecolor{labIpa}{gray}{0.50}
+\definecolor{labIdx}{gray}{0.60}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+% ---------------- 希腊字母 ----------------
+% LaTeX 已内置 \Gamma \Delta \Theta \Lambda \Xi \Pi \Sigma \Upsilon
+% \Phi \Psi \Omega,其余显式补齐。全部直立体,描红时不被倾斜干扰。
+\providecommand{\Gamma}{Γ}
+\providecommand{\Delta}{Δ}
+\providecommand{\Theta}{Θ}
+\providecommand{\Lambda}{Λ}
+\providecommand{\Xi}{Ξ}
+\providecommand{\Pi}{Π}
+\providecommand{\Sigma}{Σ}
+\providecommand{\Upsilon}{Υ}
+\providecommand{\Phi}{Φ}
+\providecommand{\Psi}{Ψ}
+\providecommand{\Omega}{Ω}
+
+% LaTeX 内置 \Gamma 等大写命令在 TU 编码下同样是数学命令,
+% 这里统一用 expl3 惰性定义,保证直立体且不触发 "Missing $ inserted"。
+\ExplSyntaxOn
+\cs_new_protected:Npn \greekGamma { {\symbol{915}} }
+\cs_new_protected:Npn \greekDelta { {\symbol{916}} }
+\cs_new_protected:Npn \greekTheta { {\symbol{920}} }
+\cs_new_protected:Npn \greekLambda { {\symbol{923}} }
+\cs_new_protected:Npn \greekXi { {\symbol{926}} }
+\cs_new_protected:Npn \greekPi { {\symbol{928}} }
+\cs_new_protected:Npn \greekSigma { {\symbol{931}} }
+\cs_new_protected:Npn \greekUpsilon { {\symbol{933}} }
+\cs_new_protected:Npn \greekPhi { {\symbol{934}} }
+\cs_new_protected:Npn \greekPsi { {\symbol{936}} }
+\cs_new_protected:Npn \greekOmega { {\symbol{937}} }
+\ExplSyntaxOff
+
+% 大写:同样不能用裸字符(导言区会求值),改用 expl3 惰性定义。
+\ExplSyntaxOn
+\cs_new_protected:Npn \greekAlpha { {\symbol{913}} }
+\cs_new_protected:Npn \greekBeta { {\symbol{914}} }
+\cs_new_protected:Npn \greekEpsilon { {\symbol{917}} }
+\cs_new_protected:Npn \greekZeta { {\symbol{918}} }
+\cs_new_protected:Npn \greekEta { {\symbol{919}} }
+\cs_new_protected:Npn \greekIota { {\symbol{921}} }
+\cs_new_protected:Npn \greekKappa { {\symbol{922}} }
+\cs_new_protected:Npn \greekMu { {\symbol{924}} }
+\cs_new_protected:Npn \greekNu { {\symbol{925}} }
+\cs_new_protected:Npn \greekOmicron { {\symbol{927}} }
+\cs_new_protected:Npn \greekRho { {\symbol{929}} }
+\cs_new_protected:Npn \greekTau { {\symbol{932}} }
+\cs_new_protected:Npn \greekChi { {\symbol{935}} }
+\ExplSyntaxOff
+
+% 小写:LaTeX 内置的 \alpha ... \omega 是数学命令,在 TU 编码下会
+% 触发 "Missing $ inserted"。这里用 expl3 惰性重定义为直立体字符,
+% 描红范本才不会被数学斜体的倾斜干扰。
+\ExplSyntaxOn
+\cs_new_protected:Npn \greekalpha { {\symbol{945}} }
+\cs_new_protected:Npn \greekbeta { {\symbol{946}} }
+\cs_new_protected:Npn \greekgamma { {\symbol{947}} }
+\cs_new_protected:Npn \greekdelta { {\symbol{948}} }
+\cs_new_protected:Npn \greekepsilon { {\symbol{949}} }
+\cs_new_protected:Npn \greekzeta { {\symbol{950}} }
+\cs_new_protected:Npn \greeketa { {\symbol{951}} }
+\cs_new_protected:Npn \greektheta { {\symbol{952}} }
+\cs_new_protected:Npn \greekiota { {\symbol{953}} }
+\cs_new_protected:Npn \greekkappa { {\symbol{954}} }
+\cs_new_protected:Npn \greeklambda { {\symbol{955}} }
+\cs_new_protected:Npn \greekmu { {\symbol{956}} }
+\cs_new_protected:Npn \greeknu { {\symbol{957}} }
+\cs_new_protected:Npn \greekxi { {\symbol{958}} }
+\cs_new_protected:Npn \greekomicron { {\symbol{959}} }
+\cs_new_protected:Npn \greekpi { {\symbol{960}} }
+\cs_new_protected:Npn \greekrho { {\symbol{961}} }
+\cs_new_protected:Npn \greeksigma { {\symbol{963}} }
+\cs_new_protected:Npn \greektau { {\symbol{964}} }
+\cs_new_protected:Npn \greekupsilon { {\symbol{965}} }
+\cs_new_protected:Npn \greekphi { {\symbol{966}} }
+\cs_new_protected:Npn \greekchi { {\symbol{967}} }
+\cs_new_protected:Npn \greekpsi { {\symbol{968}} }
+\cs_new_protected:Npn \greekomega { {\symbol{969}} }
+\ExplSyntaxOff
+
+% ---------------- 版面常量 ----------------
+% 单元格 64mm 宽;3 列 = 192mm + 2x3mm 间距 = 198mm,配合 6mm 页边距铺满
+\newlength{\CellW} \setlength{\CellW}{64mm}
+\newlength{\SubW}  \setlength{\SubW}{31.25mm}   % 描红/临摹 各占一半
+\newlength{\SubMid}\setlength{\SubMid}{32.75mm} % 分栏中点
+
+% 四线三格纵向布局(自 cap/asc line 向下为正):
+%   cap/asc line  = 0
+%   x-height line = 5.92mm   (cap - x-height = 0.2285 em)
+%   baseline      = 20.08mm  (cap = 0.6968 em)
+%   descender     = 25.58mm  (cap + descender = 0.8530 em)
+\newcommand{\dXh}{5.15}
+\newcommand{\dBase}{17.50}
+\newcommand{\dDesc}{25.60}
+
+% 字号 71.5pt -> cap 高 = 71.5 x 0.6968 = 49.8pt = 17.5mm
+\newcommand{\CapSize}{\fontsize{71.5}{71.5}\selectfont}
+
+% ---------------- IPA ----------------
+
+% ---- IPA 音标(expl3 惰性定义,详见 build_copybook.py 文档字符串) ----
+\ExplSyntaxOn
+\cs_new_protected:Npn \greekIPAofAlpha { {\ipafont \symbol{712}\symbol{230}\symbol{108}\symbol{102}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofBeta { {\ipafont \symbol{712}\symbol{98}\symbol{101}\symbol{618}\symbol{116}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofGamma { {\ipafont \symbol{712}\symbol{609}\symbol{230}\symbol{109}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofDelta { {\ipafont \symbol{712}\symbol{100}\symbol{603}\symbol{108}\symbol{116}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofEpsilon { {\ipafont \symbol{101}\symbol{112}\symbol{712}\symbol{115}\symbol{97}\symbol{618}\symbol{108}\symbol{601}\symbol{110}} }
+\cs_new_protected:Npn \greekIPAofZeta { {\ipafont \symbol{712}\symbol{122}\symbol{105}\symbol{720}\symbol{116}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofEta { {\ipafont \symbol{712}\symbol{105}\symbol{720}\symbol{116}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofTheta { {\ipafont \symbol{712}\symbol{952}\symbol{105}\symbol{720}\symbol{116}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofIota { {\ipafont \symbol{97}\symbol{618}\symbol{712}\symbol{601}\symbol{650}\symbol{116}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofKappa { {\ipafont \symbol{712}\symbol{107}\symbol{230}\symbol{112}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofLambda { {\ipafont \symbol{712}\symbol{108}\symbol{230}\symbol{109}\symbol{100}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofMu { {\ipafont \symbol{109}\symbol{106}\symbol{117}\symbol{720}} }
+\cs_new_protected:Npn \greekIPAofNu { {\ipafont \symbol{110}\symbol{106}\symbol{117}\symbol{720}} }
+\cs_new_protected:Npn \greekIPAofXi { {\ipafont \symbol{107}\symbol{115}\symbol{97}\symbol{618}} }
+\cs_new_protected:Npn \greekIPAofOmicron { {\ipafont \symbol{594}\symbol{109}\symbol{618}\symbol{107}\symbol{114}\symbol{594}\symbol{110}} }
+\cs_new_protected:Npn \greekIPAofPi { {\ipafont \symbol{112}\symbol{97}\symbol{618}} }
+\cs_new_protected:Npn \greekIPAofRho { {\ipafont \symbol{114}\symbol{111}\symbol{650}} }
+\cs_new_protected:Npn \greekIPAofSigma { {\ipafont \symbol{712}\symbol{115}\symbol{618}\symbol{609}\symbol{109}\symbol{601}} }
+\cs_new_protected:Npn \greekIPAofTau { {\ipafont \symbol{116}\symbol{111}\symbol{650}} }
+\cs_new_protected:Npn \greekIPAofUpsilon { {\ipafont \symbol{712}\symbol{652}\symbol{112}\symbol{115}\symbol{618}\symbol{108}\symbol{601}\symbol{110}} }
+\cs_new_protected:Npn \greekIPAofPhi { {\ipafont \symbol{102}\symbol{97}\symbol{618}} }
+\cs_new_protected:Npn \greekIPAofChi { {\ipafont \symbol{107}\symbol{97}\symbol{618}} }
+\cs_new_protected:Npn \greekIPAofPsi { {\ipafont \symbol{112}\symbol{115}\symbol{97}\symbol{618}} }
+\cs_new_protected:Npn \greekIPAofOmega { {\ipafont \symbol{712}\symbol{594}\symbol{109}\symbol{618}\symbol{609}\symbol{601}} }
+\ExplSyntaxOff
+% ================================================================
+%  描红/临摹区(四线三格 + 左右双栏)
+%  #1 = 该区顶边 y   #2 = 该区字母
+% ================================================================
+\newcommand{\TraceZone}[2]{%
+  \draw[cellbd,line width=0.45pt] (0,#1) rectangle (\CellW,{#1+\dDesc});
+  \draw[guide,line width=0.6pt] (0,#1) -- (\CellW,#1);
+  \draw[guideMid,line width=0.35pt] (0,{#1+\dXh}) -- (\CellW,{#1+\dXh});
+  \draw[guide,line width=0.8pt] (0,{#1+\dBase}) -- (\CellW,{#1+\dBase});
+  \draw[guideMid,line width=0.35pt] (0,{#1+\dDesc}) -- (\CellW,{#1+\dDesc});
+  \draw[cellbd,line width=0.45pt] (\SubMid,#1) -- (\SubMid,{#1+\dDesc});
+  \draw[guideAxis,line width=0.25pt,dash pattern=on 1.1mm off 1.1mm]
+    ({0.5\SubW},{#1+\dDesc}) -- ({0.5\SubW},#1);
+  \draw[guideAxis,line width=0.25pt,dash pattern=on 1.1mm off 1.1mm]
+    ({\SubMid+0.5\SubW},{#1+\dDesc}) -- ({\SubMid+0.5\SubW},#1);
+  \node[anchor=base,inner sep=0pt,text=trace] at ({0.5\SubW},{#1+\dBase})
+    {{\CapSize #2}};
+}
+
+% ================================================================
+%  单个字母格
+%  #1 x  #2 y(格顶)  #3 序号  #4 大写  #5 小写
+%  #6 English  #7 中文音译  #8 IPA 宏
+% ================================================================
+\newcommand{\LetterCell}[8]{%
+\begin{scope}[shift={(#1,#2)}]
+  \node[anchor=north west,inner sep=0pt,text=labIdx]
+    at (2.0,1.7) {{\fontsize{8}{8}\selectfont #3}};
+  \node[anchor=north west,inner sep=0pt,text=labEn]
+    at (6.4,0.5) {{\fontsize{11.5}{11.5}\selectfont #6}};
+  \node[anchor=north west,inner sep=0pt,text=labZh]
+    at (6.4,5.2) {{\fontsize{8.4}{8.4}\selectfont #7}};
+  \node[anchor=north east,inner sep=0pt,text=labIpa]
+    at ({\CellW-2.0},3.0) {{\ipafont\fontsize{8.2}{8.2}\selectfont /#8/}};
+  \draw[guideMid,line width=0.3pt] (1.6,9.9) -- ({\CellW-1.6},9.9);
+  \TraceZone{11.4}{#4}
+  \TraceZone{36.40}{#5}
+\end{scope}%
+}
+
+% ================================================================
+\begin{document}
+\mbox{}
+
+\begin{tikzpicture}[remember picture,overlay,x=1mm,y=-1mm]
+\begin{scope}[shift={(current page.north west)}]
+\begin{scope}[shift={(6,6)}]
+
+\node[anchor=north west,inner sep=0pt,text=labEn] at (0,1.2)
+  {{\fontsize{11}{11}\selectfont Greek Alphabet Copybook}};
+\node[anchor=north east,inner sep=0pt,text=labZh] at (198,1.6)
+  {{\fontsize{8.4}{8.4}\selectfont 希腊字母练字帖 · 第 1 / 2 页}};
+\draw[guideMid,line width=0.3pt] (0,8.4) -- (198,8.4);
+\node[anchor=north west,inner sep=0pt,text=labIpa] at (0,9.4)
+  {{\fontsize{6.6}{6.6}\selectfont 每区左栏为浅灰范本(描红),右栏为空白(临摹);四条基准线自上而下:大写高度 / 小写高度 / 基线 / 降部线}};
+
+\LetterCell{0}{17.6}{1}{\greekAlpha}{\greekalpha}{Alpha}{阿尔法}{\greekIPAofAlpha}
+\LetterCell{67}{17.6}{2}{\greekBeta}{\greekbeta}{Beta}{贝塔}{\greekIPAofBeta}
+\LetterCell{134}{17.6}{3}{\greekGamma}{\greekgamma}{Gamma}{伽马}{\greekIPAofGamma}
+\LetterCell{0}{85.26}{4}{\greekDelta}{\greekdelta}{Delta}{德尔塔}{\greekIPAofDelta}
+\LetterCell{67}{85.26}{5}{\greekEpsilon}{\greekepsilon}{Epsilon}{厄普西龙}{\greekIPAofEpsilon}
+\LetterCell{134}{85.26}{6}{\greekZeta}{\greekzeta}{Zeta}{泽塔}{\greekIPAofZeta}
+\LetterCell{0}{152.92}{7}{\greekEta}{\greeketa}{Eta}{伊塔}{\greekIPAofEta}
+\LetterCell{67}{152.92}{8}{\greekTheta}{\greektheta}{Theta}{西塔}{\greekIPAofTheta}
+\LetterCell{134}{152.92}{9}{\greekIota}{\greekiota}{Iota}{约塔}{\greekIPAofIota}
+\LetterCell{0}{220.58}{10}{\greekKappa}{\greekkappa}{Kappa}{卡帕}{\greekIPAofKappa}
+\LetterCell{67}{220.58}{11}{\greekLambda}{\greeklambda}{Lambda}{拉姆达}{\greekIPAofLambda}
+\LetterCell{134}{220.58}{12}{\greekMu}{\greekmu}{Mu}{缪}{\greekIPAofMu}
+
+\end{scope}
+\end{scope}
+\end{tikzpicture}
+
+\newpage
+\mbox{}
+
+\begin{tikzpicture}[remember picture,overlay,x=1mm,y=-1mm]
+\begin{scope}[shift={(current page.north west)}]
+\begin{scope}[shift={(6,6)}]
+
+\node[anchor=north west,inner sep=0pt,text=labEn] at (0,1.2)
+  {{\fontsize{11}{11}\selectfont Greek Alphabet Copybook}};
+\node[anchor=north east,inner sep=0pt,text=labZh] at (198,1.6)
+  {{\fontsize{8.4}{8.4}\selectfont 希腊字母练字帖 · 第 2 / 2 页}};
+\draw[guideMid,line width=0.3pt] (0,8.4) -- (198,8.4);
+\node[anchor=north west,inner sep=0pt,text=labIpa] at (0,9.4)
+  {{\fontsize{6.6}{6.6}\selectfont 小写 sigma 有两种形态:字首与词中用 σ,词尾用 ς;Xi 读 ks,三横等长;Phi 的竖笔穿过圆心}};
+
+\LetterCell{0}{17.6}{13}{\greekNu}{\greeknu}{Nu}{纽}{\greekIPAofNu}
+\LetterCell{67}{17.6}{14}{\greekXi}{\greekxi}{Xi}{克西}{\greekIPAofXi}
+\LetterCell{134}{17.6}{15}{\greekOmicron}{\greekomicron}{Omicron}{奥米克戎}{\greekIPAofOmicron}
+\LetterCell{0}{85.26}{16}{\greekPi}{\greekpi}{Pi}{派}{\greekIPAofPi}
+\LetterCell{67}{85.26}{17}{\greekRho}{\greekrho}{Rho}{柔}{\greekIPAofRho}
+\LetterCell{134}{85.26}{18}{\greekSigma}{\greeksigma}{Sigma}{西格马}{\greekIPAofSigma}
+\LetterCell{0}{152.92}{19}{\greekTau}{\greektau}{Tau}{陶}{\greekIPAofTau}
+\LetterCell{67}{152.92}{20}{\greekUpsilon}{\greekupsilon}{Upsilon}{宇普西龙}{\greekIPAofUpsilon}
+\LetterCell{134}{152.92}{21}{\greekPhi}{\greekphi}{Phi}{斐}{\greekIPAofPhi}
+\LetterCell{0}{220.58}{22}{\greekChi}{\greekchi}{Chi}{希}{\greekIPAofChi}
+\LetterCell{67}{220.58}{23}{\greekPsi}{\greekpsi}{Psi}{普西}{\greekIPAofPsi}
+\LetterCell{134}{220.58}{24}{\greekOmega}{\greekomega}{Omega}{欧米伽}{\greekIPAofOmega}
+
+\end{scope}
+\end{scope}
+\end{tikzpicture}
+
+\end{document}

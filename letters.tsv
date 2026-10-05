@@ -1,0 +1,25 @@
+# 序号	x(mm)	y(mm)	大写	小写	English	中文音译	IPA
+1	0	17.6	\Alpha	\alpha	Alpha	阿尔法	ˈælfə
+2	67	17.6	\Beta	\beta	Beta	贝塔	ˈbeɪtə
+3	134	17.6	\Gamma	\gamma	Gamma	伽马	ˈɡæmə
+4	0	85.26	\Delta	\delta	Delta	德尔塔	ˈdɛltə
+5	67	85.26	\Epsilon	\varepsilon	Epsilon	厄普西龙	epˈsaɪlən
+6	134	85.26	\Zeta	\zeta	Zeta	泽塔	ˈziːtə
+7	0	152.92	\Eta	\eta	Eta	伊塔	ˈiːtə
+8	67	152.92	\Theta	\theta	Theta	西塔	ˈθiːtə
+9	134	152.92	\Iota	\iota	Iota	约塔	aɪˈəʊtə
+10	0	220.58	\Kappa	\kappa	Kappa	卡帕	ˈkæpə
+11	67	220.58	\Lambda	\lambda	Lambda	拉姆达	ˈlæmdə
+12	134	220.58	\Mu	\mu	Mu	缪	mjuː
+13	0	17.6	\Nu	\nu	Nu	纽	njuː
+14	67	17.6	\Xi	\xi	Xi	克西	ksaɪ
+15	134	17.6	\Omicron	\omicron	Omicron	奥米克戎	ɒmɪkrɒn
+16	0	85.26	\Pi	\pi	Pi	派	paɪ
+17	67	85.26	\Rho	\rho	Rho	柔	roʊ
+18	134	85.26	\Sigma	\sigma	Sigma	西格马	ˈsɪɡmə
+19	0	152.92	\Tau	\tau	Tau	陶	toʊ
+20	67	152.92	\Upsilon	\upsilon	Upsilon	宇普西龙	ˈʌpsɪlən
+21	134	152.92	\Phi	\phi	Phi	斐	faɪ
+22	0	220.58	\Chi	\chi	Chi	希	kaɪ
+23	67	220.58	\Psi	\psi	Psi	普西	psaɪ
+24	134	220.58	\Omega	\omega	Omega	欧米伽	ˈɒmɪɡə
